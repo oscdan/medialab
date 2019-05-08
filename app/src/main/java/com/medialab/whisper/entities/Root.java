@@ -6,8 +6,8 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 
 public class Root implements Parcelable {
-    public ArrayList<Whisper> popular;
-    public ArrayList<Whisper> replies;
+    private ArrayList<Whisper> popular;
+    private ArrayList<Whisper> replies;
 
     public Root() {
     }
@@ -52,7 +52,7 @@ public class Root implements Parcelable {
         dest.writeTypedList(this.replies);
     }
 
-    protected Root(Parcel in) {
+    Root(Parcel in) {
         this.popular = in.createTypedArrayList(Whisper.CREATOR);
         this.replies = in.createTypedArrayList(Whisper.CREATOR);
     }

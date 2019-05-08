@@ -3,6 +3,7 @@ package com.medialab.whisper.viewmodel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -19,21 +20,27 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class WhispersViewModel extends ViewModel {
-    //this is the data that we will fetch asynchronously
+    //Data that we will be fetched asynchronously
     private MutableLiveData<List<Whisper>> whisperList;
+    private MutableLiveData<List<Whisper>> repliesList;
 
     public LiveData<List<Whisper>> getWhispers() {
-        //if the list is null
         if (whisperList == null) {
             whisperList = new MutableLiveData<List<Whisper>>();
-            //we will load it asynchronously from server in this method
             loadWhispers();
         }
 
-        //finally we will return the list
         return whisperList;
     }
 
+    public LiveData<List<Whisper>> getReplies(String wid) {
+        if (repliesList == null) {
+            repliesList = new MutableLiveData<List<Whisper>>();
+            loadReplies(wid);
+        }
+
+        return repliesList;
+    }
 
     //This method is using Retrofit to get the JSON data from URL
     private void loadWhispers() {
@@ -49,11 +56,37 @@ public class WhispersViewModel extends ViewModel {
         Api api = retrofit.create(Api.class);
         Call<Root> call = api.getPopulars();
 
+        call.enqueue(new Callback<Root>() {
+            @Override
+            public void onResponse(@Nullable Call<Root> call, @Nullable Response<Root> root) {
+                whisperList.setValue(root.body().getPopular());
+            }
+
+            @Override
+            public void onFailure(Call<Root> call, Throwable t) {
+                Log.e("Whisper", t.toString());
+            }
+        });
+    }
+
+    //This method is using Retrofit to get the JSON data from URL
+    private void loadReplies(String wid) {
+
+        Gson gson = new GsonBuilder()
+                .create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Api.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        Api api = retrofit.create(Api.class);
+        Call<Root> call = api.getReplies(wid);
 
         call.enqueue(new Callback<Root>() {
             @Override
-            public void onResponse(Call<Root> call, Response<Root> root) {
-                whisperList.setValue(root.body().getPopular());
+            public void onResponse(@Nullable Call<Root> call, @Nullable Response<Root> root) {
+                repliesList.setValue(root.body().getReplies());
             }
 
             @Override

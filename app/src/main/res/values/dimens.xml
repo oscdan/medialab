@@ -2,4 +2,7 @@
 <resources>
     <dimen name="list_image_margin">8dp</dimen>
     <dimen name="list_text_size">18sp</dimen>
+    <dimen name="list_image_width">60dp</dimen>
+    <dimen name="app_bar_height">150dp</dimen>
+    <dimen name="whisper_title">24sp</dimen>
 </resources>

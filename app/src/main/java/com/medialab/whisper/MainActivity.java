@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -34,26 +33,25 @@ public class MainActivity extends AppCompatActivity {
 
     private void initViewModel() {
 
-        final Observer<List<Whisper>> notesObserver =
+        final Observer<List<Whisper>> whisperObserver =
                 new Observer<List<Whisper>>() {
                     @Override
-                    public void onChanged(@Nullable List<Whisper> noteEntities) {
+                    public void onChanged(@Nullable List<Whisper> whispers) {
                         whisperList.clear();
-                        whisperList.addAll(noteEntities);
+                        whisperList.addAll(whispers);
 
                         if (whisperAdapter == null) {
-                            whisperAdapter = new WhisperAdapter(MainActivity.this, whisperList);
+                            whisperAdapter = new WhisperAdapter(MainActivity.this, whisperList, false);
                             recyclerView.setAdapter(whisperAdapter);
                         } else {
                             whisperAdapter.notifyDataSetChanged();
                         }
-
                     }
                 };
 
         whispersViewModel = ViewModelProviders.of(this)
                 .get(WhispersViewModel.class);
-        whispersViewModel.getWhispers().observe(this, notesObserver);
+        whispersViewModel.getWhispers().observe(this, whisperObserver);
 
     }
 
@@ -62,10 +60,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-
-        DividerItemDecoration divider = new DividerItemDecoration(
-                recyclerView.getContext(), layoutManager.getOrientation());
-        recyclerView.addItemDecoration(divider);
 
     }
 }
