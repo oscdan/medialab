@@ -64,7 +64,7 @@ public class RepliesActivity extends AppCompatActivity {
                         repliesList.addAll(replies);
 
                         if (repliesAdapter == null) {
-                            repliesAdapter = new WhisperAdapter(RepliesActivity.this, repliesList, false);
+                            repliesAdapter = new WhisperAdapter(RepliesActivity.this, repliesList, true);
                             recyclerView.setAdapter(repliesAdapter);
                         } else {
                             repliesAdapter.notifyDataSetChanged();
